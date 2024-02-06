@@ -3,17 +3,17 @@
 interface Props {
   c:number
   r:number
+  contenido?:string
 }
 
-const { c, r } =  defineProps<Props>()
+const { c, r , contenido } =  defineProps<Props>()
 
 
 </script>
 
 <template>
    <div>
-    <p>{{ c }}</p>
-    <p> {{ r }}</p>
+    <p>  {{ contenido }} </p>
    </div>
 </template>
 

@@ -2,7 +2,8 @@
 import calendarioMes from './components/calendarioMes.vue';
 </script>
 <template>
-<calendarioMes />
+    <div>Pantalla principal</div>
+    <calendarioMes :mes="'2'" :anio="'2024'" />
 </template>
 
 <style>

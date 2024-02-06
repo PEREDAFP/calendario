@@ -4,11 +4,13 @@ import celdaCalendario from '@/components/celdaCalendario.vue'
 
 
 interface Props{
+    mes:string
+    anio:string
     cols?:string[]
     COLS?:number
     ROWS?:number
 }
-const { cols, COLS, ROWS } = withDefaults(defineProps<Props>(),{
+const { mes, anio,cols, COLS, ROWS } = withDefaults(defineProps<Props>(),{
             cols: ()=> ['Lunes', 'Martes', 'Miércoles', 'Jueves','Viernes','Sábado', 'Domingo'],
             COLS: 7,
             ROWS: 6	
@@ -17,9 +19,21 @@ const { cols, COLS, ROWS } = withDefaults(defineProps<Props>(),{
 
 const celdas = reactive(
   Array.from(Array(COLS).keys()).map(() =>
-    Array.from(Array(ROWS).keys()).map(() => '')
+    Array.from(Array(ROWS).keys()).map(() => 'turbio ')
   )
 )
+const getWeekDay:(date: Date)=>number  = (date: Date) => {
+  let days = [6,0,1,2,3,4,5]
+  return days[date.getDay()];
+}
+const primerdia = new Date(`${mes}/01/${anio}`)
+console.log(primerdia)
+console.log(getWeekDay(primerdia))
+
+console.log(celdas)
+celdas[0][getWeekDay(primerdia)]=`${mes}/01/${anio}`
+
+
 
 </script>
 
@@ -35,7 +49,7 @@ const celdas = reactive(
       <tr v-for="i in celdas[0].length" :key="i">
         <th>{{ i - 1 }}</th>
         <td v-for="(c, j) in cols" :key="c">
-          <celdaCalendario :r="i - 1" :c="j"/>
+          <celdaCalendario :r="i - 1" :c="j" :contenido="celdas[i-1][j]"/>
         </td>
       </tr>
     </tbody>
