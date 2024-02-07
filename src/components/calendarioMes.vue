@@ -19,7 +19,7 @@ const { mes, anio,cols, COLS, ROWS } = withDefaults(defineProps<Props>(),{
 
 const celdas = reactive(
   Array.from(Array(COLS).keys()).map(() =>
-    Array.from(Array(ROWS).keys()).map(() => 'turbio ')
+    Array.from(Array(ROWS).keys()).map(() => '- ')
   )
 )
 const getWeekDay:(date: Date)=>number  = (date: Date) => {
