@@ -1,44 +1,51 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import {computed } from 'vue'
 import celdaCalendario from '@/components/celdaCalendario.vue'
 
-
 interface Props{
-    mes:string
-    anio:string
+    mes:number
+    anio?:number
     cols?:string[]
     COLS?:number
     ROWS?:number
 }
-const { mes, anio,cols, COLS, ROWS } = withDefaults(defineProps<Props>(),{
+
+const props = withDefaults(defineProps<Props>(),{
             cols: ()=> ['Lunes', 'Martes', 'Miércoles', 'Jueves','Viernes','Sábado', 'Domingo'],
             COLS: 7,
-            ROWS: 6	
-       })
+            ROWS: 6,
+            anio: 2024	
+})
 
 
-const celdas = reactive(
-  Array.from(Array(COLS).keys()).map(() =>
-    Array.from(Array(ROWS).keys()).map(() => '- ')
-  )
-)
-const getWeekDay:(date: Date)=>number  = (date: Date) => {
-  let days = [6,0,1,2,3,4,5]
-  return days[date.getDay()];
+//Convertimos el número de orden del día en filas y columnas
+const anadevalorSecuencial = (numero:number, valor:string, celdas:string[][]) =>{
+    const fila = Math.floor(numero / props.COLS);
+    const columna = numero % props.COLS;
+    celdas[fila][columna]=valor 
 }
-const primerdia = new Date(`${mes}/01/${anio}`)
-console.log(primerdia)
-console.log(getWeekDay(primerdia))
 
-console.log(celdas)
-celdas[0][getWeekDay(primerdia)]=`${mes}/01/${anio}`
+const getWeekDay = (fecha: Date) => [6,0,1,2,3,4,5][fecha.getDay()]
 
 
 
+const tablaMes = computed(() =>{
+  const celdas = Array.from(Array(props.COLS).keys()).map(() =>
+                        Array.from(Array(props.ROWS).keys()).map(() => '- '))
+  const primerDia = new Date(`${props.anio}-${props.mes}-1`)
+
+  const posicionPrimerDia = getWeekDay(primerDia) 
+  const numDiasMes = new Date(props.anio, props.mes, 0).getDate()
+  const rangoNumeros = [...Array(numDiasMes).keys()] .map(i => i + posicionPrimerDia )
+  
+  //Recorremos el rango de números para añadir la fecha
+  rangoNumeros.map((el,ind)=> anadevalorSecuencial(el,`${ind +1}/${props.mes}/${props.anio}`, celdas))
+  return celdas
+})
 </script>
 
 <template>
-  <table>
+   <table>
     <thead>
       <tr>
         <th></th>
@@ -46,10 +53,10 @@ celdas[0][getWeekDay(primerdia)]=`${mes}/01/${anio}`
       </tr>
     </thead>
     <tbody>
-      <tr v-for="i in celdas[0].length" :key="i">
+      <tr v-for="i in props.ROWS" :key="i">
         <th>{{ i - 1 }}</th>
         <td v-for="(c, j) in cols" :key="c">
-          <celdaCalendario :r="i - 1" :c="j" :contenido="celdas[i-1][j]"/>
+          <celdaCalendario :valor="tablaMes[i-1][j]"/>
         </td>
       </tr>
     </tbody>

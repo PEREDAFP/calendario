@@ -1,19 +1,17 @@
 <script setup lang="ts">
 
 interface Props {
-  c:number
-  r:number
-  contenido?:string
+  valor?:string
 }
 
-const { c, r , contenido } =  defineProps<Props>()
+const props =  defineProps<Props>()
 
 
 </script>
 
 <template>
    <div>
-    <p>  {{ contenido }} </p>
+    <p>  {{ props.valor }} </p>
    </div>
 </template>
 
