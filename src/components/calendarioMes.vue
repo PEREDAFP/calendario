@@ -3,7 +3,7 @@ import {computed } from 'vue'
 import celdaCalendario from '@/components/celdaCalendario.vue'
 
 interface Props{
-    mes:number
+    mes?:number
     anio?:number
     cols?:string[]
     COLS?:number
@@ -14,7 +14,10 @@ const props = withDefaults(defineProps<Props>(),{
             cols: ()=> ['Lunes', 'Martes', 'Miércoles', 'Jueves','Viernes','Sábado', 'Domingo'],
             COLS: 7,
             ROWS: 6,
-            anio: 2024	
+            anio: 2000,
+            mes: 1
+
+
 })
 
 
@@ -25,19 +28,15 @@ const anadevalorSecuencial = (numero:number, valor:string, celdas:string[][]) =>
     celdas[fila][columna]=valor 
 }
 
-const getWeekDay = (fecha: Date) => [6,0,1,2,3,4,5][fecha.getDay()]
-
 
 
 const tablaMes = computed(() =>{
   const celdas = Array.from(Array(props.COLS).keys()).map(() =>
                         Array.from(Array(props.ROWS).keys()).map(() => '- '))
   const primerDia = new Date(`${props.anio}-${props.mes}-1`)
-
-  const posicionPrimerDia = getWeekDay(primerDia) 
+  const posicionPrimerDia = [6,0,1,2,3,4,5][primerDia.getDay()]
   const numDiasMes = new Date(props.anio, props.mes, 0).getDate()
   const rangoNumeros = [...Array(numDiasMes).keys()] .map(i => i + posicionPrimerDia )
-  
   //Recorremos el rango de números para añadir la fecha
   rangoNumeros.map((el,ind)=> anadevalorSecuencial(el,`${ind +1}/${props.mes}/${props.anio}`, celdas))
   return celdas
